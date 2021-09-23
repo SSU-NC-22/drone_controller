@@ -103,6 +103,12 @@ class SensorSub():
 
     def waypointCallback(self, data):
         self.reachedWaypoint = data.wp_seq
+        
+        if self.reachedWaypoint == endidx:
+            self.status = "done"
+        else:
+            self.status = "on going"
+            
         # 6. 7. hold still above tag drop the object
         if self.reachedWaypoint == tagidx+1:
             self.dcmotor.counterclockwise()
@@ -113,13 +119,6 @@ class SensorSub():
             time.sleep(1)
             self.dcmotor.stop()
             time.sleep(0.2)
-
-    def statusCallback(self, data):
-        if self.reachedWaypoint == endidx:
-            self.status = "done"
-        else:
-            self.status = "on going"
-
 
 if __name__ == "__main__":
     # ros, ros subscribe setting

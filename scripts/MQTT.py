@@ -48,12 +48,7 @@ class MQTT():
         else:
             print("Failed to send message to topic", self.pub_topic)
 
-    def subscribe(self, topic):
-        self.sub_topic = topic
-        self.client.on_message = self.mqtt_on_message
-        self.client.subscribe(self.sub_topic)
-
-    def mqtt_on_message(self, client, userdata, msg):  # save waypoint to pixhawk
+    def ActuatorReqCallBack(self, client, userdata, msg):  # save waypoint to pixhawk
         print("Got Actutator message from server")
         # 1. get waypoint, send to pixhawk
         msg = msg.payload.decode()
@@ -65,6 +60,12 @@ class MQTT():
 
         # dronecontroller will take over the mssion
         dronecontroller.mqtt_call_back(wpl, tagidx, endidx)
+    
+
+    def DevStatusReqCallBack(self, client, userdata, msg):
+        msgs = { "battery": sensorSub.batteryPer }
+        msg = json.dumps(msgs)
+        mqtt.publish("command/uplink/"+client_id, msg)
         
 
 
@@ -109,7 +110,10 @@ if __name__ == "__main__":
     # mqtt, mqtt sub, pub setting
     mqtt = MQTT(broker, port, client_id)
     mqtt.connect_mqtt()
-    mqtt.subscribe("command/downlink/ActuatorReq/"+client_id)
+    mqtt.client.message_callback_add("command/downlink/ActuatorReq/"+client_id, mqtt.ActuatorReqCallBack)
+    mqtt.client.message_callback_add("command/downlink/DevStatusReq/"+client_id, mqtt.DevStatusReqCallBack)
+    mqtt.client.subscribe("command/downlink/ActuatorReq/"+client_id)
+    mqtt.client.subscribe("command/downlink/DevStatusReq/"+client_id)
 
     while not rospy.is_shutdown():
         # sensor value sending code

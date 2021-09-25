@@ -109,9 +109,9 @@ if __name__ == "__main__":
 
     # mqtt, mqtt sub, pub setting
     mqtt = MQTT(broker, port, client_id)
-    mqtt.connect_mqtt()
     mqtt.client.message_callback_add("command/downlink/ActuatorReq/"+client_id, mqtt.ActuatorReqCallBack)
     mqtt.client.message_callback_add("command/downlink/DevStatusReq/"+client_id, mqtt.DevStatusReqCallBack)
+    mqtt.connect_mqtt()
     mqtt.client.subscribe("command/downlink/ActuatorReq/"+client_id)
     mqtt.client.subscribe("command/downlink/DevStatusReq/"+client_id)
 

@@ -16,7 +16,7 @@ import time
 
 broker = '58.230.119.87'
 port = 9708
-client_id = 'DRO0'
+client_id = 'DRO3'
 
 
 class MQTT():

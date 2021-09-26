@@ -68,7 +68,7 @@ class MQTT():
                 "alt" : sensorSub.alt,
                 "battery": sensorSub.batteryVol }
         msg = json.dumps(msgs)
-        mqtt.publish("command/uplink/DevStatusAns"+client_id, msg)        
+        mqtt.publish("command/uplink/DevStatusAns/"+client_id, msg)        
 
 
 class SensorSub():

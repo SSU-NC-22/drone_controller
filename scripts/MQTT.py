@@ -63,10 +63,12 @@ class MQTT():
     
 
     def DevStatusReqCallBack(self, client, userdata, msg):
-        msgs = { "battery": sensorSub.batteryPer }
+        msgs = {"lat": sensorSub.lat,
+                "long": sensorSub.long,
+                "alt" : sensorSub.alt,
+                "battery": sensorSub.batteryVol }
         msg = json.dumps(msgs)
-        mqtt.publish("command/uplink/"+client_id, msg)
-        
+        mqtt.publish("command/uplink/DevStatusAns"+client_id, msg)        
 
 
 class SensorSub():

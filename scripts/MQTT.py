@@ -126,9 +126,9 @@ if __name__ == "__main__":
                 sensorSub.long,
                 sensorSub.alt,
                 sensorSub.velcity,
-                sensorSub.batteryPer
+                sensorSub.batteryPer,
+                dronecontroller.status
             ],
-            "status": dronecontroller.status,
             "timestamp": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         }
 

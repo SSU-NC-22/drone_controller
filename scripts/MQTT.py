@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 
 from paho import mqtt
@@ -14,9 +15,10 @@ from mavros_msgs.srv import *
 from DroneController import DroneController
 import time
 
-broker = '58.230.119.87'
-port = 9708
-client_id = 'DRO3'
+# broker host/port from env (was a hardcoded operator IP — security finding)
+broker = os.environ.get('MQTT_BROKER_HOST', '127.0.0.1')
+port = int(os.environ.get('MQTT_BROKER_PORT', '1883'))
+client_id = os.environ.get('DRONE_ID', 'DRO3')   # a device sets its own id; defaults to DRO3
 
 
 class MQTT():
@@ -24,7 +26,12 @@ class MQTT():
         self.broker = broker
         self.port = port
         self.client_id = client_id
-        self.client = mqtt_client.Client(self.client_id)
+        # paho-mqtt 2.x needs an explicit callback API version (callbacks here use v1 signatures);
+        # older paho without the enum falls back to the 1.x constructor.
+        try:
+            self.client = mqtt_client.Client(mqtt_client.CallbackAPIVersion.VERSION1, self.client_id)
+        except AttributeError:
+            self.client = mqtt_client.Client(self.client_id)
 
     def connect_mqtt(self):
         def on_connect(client, userdata, flags, rc):
